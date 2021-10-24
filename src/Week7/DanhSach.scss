@@ -1,13 +1,30 @@
-table {
-  border-collapse: collapse;
-  td,
-  th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+div {
+  button {
+    margin-bottom: 20px;
+    border-radius:5px;
+    border: 1 solid black;
+    color: black;
   }
+  table {
+    border-collapse: collapse;
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+  
+    tr:nth-child(even) {
+      background-color: rgba(255, 0, 0, 0.61);
+    }
 
-  tr:nth-child(even) {
-    background-color: #dddddd;
+    tr.div-block {
+      background-color:green;
+    }
   }
 }
+
+.div-checkbox-true {
+  background-color: red;
+}
+

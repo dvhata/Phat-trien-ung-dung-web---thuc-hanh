@@ -2,7 +2,6 @@ import "./DanhSach.scss";
 
 import * as React from "react";
 
-
 const columns = [
   {
     id: 1,
@@ -20,88 +19,110 @@ const columns = [
 
 const list = [
   {
-    id: 1,
-    name: "Thao Hanh",
+    id: 0,
+    name: "Thao Hanh 1",
     dateOfBirth: "23/03/2001",
     sex: "male",
+    isCheck: false,
+  },
+  {
+    id: 1,
+    name: "Thao Hanh 2",
+    dateOfBirth: "23/03/2001",
+    sex: "male",
+    isCheck: false,
   },
   {
     id: 2,
-    name: "Thao Hanh",
+    name: "Thao Hanh 3",
     dateOfBirth: "23/03/2001",
     sex: "male",
+    isCheck: false,
   },
   {
     id: 3,
-    name: "Thao Hanh",
+    name: "Thao Hanh 4",
     dateOfBirth: "23/03/2001",
     sex: "male",
-  },
-  {
-    id: 4,
-    name: "Thao Hanh",
-    dateOfBirth: "23/03/2001",
-    sex: "male",
+    isCheck: false,
   },
 ];
 
 export default function DanhSach() {
-  const [disabled, setDisabled] = React.useState(true);
-  const [indexArray] = React.useState([-1]);
+  const [state, setState] = React.useState(list);
   const [checkAll, setCheckAll] = React.useState(false);
 
-  const handleOnClickPerson = React.useCallback((e) => {
-    let selected: boolean = e.target.checked;
-    let index: number = indexArray.indexOf(e.target.value);
-    if (selected === true) {
-      setDisabled(false);
-      indexArray.push(e.target.value);
-      console.log(indexArray);
-      handleOnChange(indexArray, index, e);
-    } else {
-      setDisabled(true);
-      indexArray.splice(index, e.target.value);
-      console.log(indexArray);
-      handleOnChange(indexArray, index, e);
-    }
-  }, [/* handleOnChange, */ indexArray]);
+  const handleOnClickPerson = React.useCallback(
+    (e) => {
+      const temp = [...state];
+      
+      // console.log(temp)
+      const value = e.target.value
+      let i = -1
+      temp.forEach((item, index) => {
+        if(item.id === +value) {
+          i = index    
+        } 
+      })
 
-  // const handleItem = React.useCallback((item) => {
-  //     if (item === )
-  // },[])
+      
+      temp[i].isCheck = e.target.checked;
+      setState(temp);
 
-  const handleOnChange = React.useCallback(
-    (array: any, index: number, e: any) => {
-      // handleDelete(index, e);
-      console.log(array.length);
-      if (array.length === 1) {
-        setDisabled(true);
-        setCheckAll(false);
-      } else if (array.length === list.length + 1) {
-        setDisabled(false);
+      const indexCheckAll = state.findIndex((item) => item.isCheck === false);
+      if (indexCheckAll === -1) {
         setCheckAll(true);
       } else {
-        setDisabled(false);
         setCheckAll(false);
       }
     },
-    []
+    [state]
   );
 
-  // const handleDelete = React.useCallback((i, e) => {
-  //   list.splice(i, e.target.value);
-  //   return [...list];
-  // }, []);
+  const handleOnClickCheckAll = React.useCallback(
+    (e) => {
+      const temp = state.map((item) => {
+        return {
+          ...item,
+          isCheck: e.target.checked,
+        };
+      });
+      setState(temp);
+      setCheckAll(e.target.checked);
+    },
+    [state]
+  );
+
+  const isDisableDelete = React.useMemo(() => {
+    // check xem co index hay khong
+    const index = state.findIndex((item) => item.isCheck === true);
+
+    return index >= 0;
+  }, [state]);
+
+  const handleDelete = React.useCallback(
+    (e) => {
+      const temp = state.filter((item) => item.isCheck === false);
+      setState(temp);
+    },
+    [state]
+  );
 
   return (
     <div>
       <h2>BTTH WEEK 7</h2>
-      <button disabled={disabled} /* onClick={handleDelete} */>DELETE</button>
+      <button disabled={!isDisableDelete} onClick={handleDelete}>
+        DELETE
+      </button>
       <table>
         <thead>
           <tr>
             <th className="checkBoxAll">
-              <input type="checkbox" checked={checkAll} />
+              <input
+                type="checkbox"
+                checked={checkAll}
+                onClick={handleOnClickCheckAll}
+              />
             </th>
             {columns.map((item) => {
               return <th key={item.id}>{item.culumnName}</th>;
@@ -109,24 +130,23 @@ export default function DanhSach() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            {list.map((item) => {
-              return (
-                <div
-                  className="div-block"
-                  key={item.id}
-                  onClick={handleOnClickPerson}
-                >
-                  <td>
-                    <input type="checkbox" value={item.id} />
-                  </td>
-                  <td>{item.name}</td>
-                  <td>{item.dateOfBirth}</td>
-                  <td>{item.sex}</td>
-                </div>
-              );
-            })}
-          </tr>
+          {state.map((item) => {
+            return (
+              <tr className={item.isCheck ? "div-block" : ""} key={item.id}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={item.isCheck}
+                    onClick={handleOnClickPerson}
+                    value={item.id}
+                  />
+                </td>
+                <td>{item.name}</td>
+                <td>{item.dateOfBirth}</td>
+                <td>{item.sex}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
