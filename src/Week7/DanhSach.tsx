@@ -2,7 +2,6 @@ import "./DanhSach.scss";
 
 import * as React from "react";
 
-
 const columns = [
   {
     id: 1,
@@ -50,26 +49,6 @@ export default function DanhSach() {
   const [indexArray] = React.useState([-1]);
   const [checkAll, setCheckAll] = React.useState(false);
 
-  const handleOnClickPerson = React.useCallback((e) => {
-    let selected: boolean = e.target.checked;
-    let index: number = indexArray.indexOf(e.target.value);
-    if (selected === true) {
-      setDisabled(false);
-      indexArray.push(e.target.value);
-      console.log(indexArray);
-      handleOnChange(indexArray, index, e);
-    } else {
-      setDisabled(true);
-      indexArray.splice(index, e.target.value);
-      console.log(indexArray);
-      handleOnChange(indexArray, index, e);
-    }
-  }, [/* handleOnChange, */ indexArray]);
-
-  // const handleItem = React.useCallback((item) => {
-  //     if (item === )
-  // },[])
-
   const handleOnChange = React.useCallback(
     (array: any, index: number, e: any) => {
       // handleDelete(index, e);
@@ -88,20 +67,68 @@ export default function DanhSach() {
     []
   );
 
-  // const handleDelete = React.useCallback((i, e) => {
-  //   list.splice(i, e.target.value);
-  //   return [...list];
-  // }, []);
+  const handleOnClickPerson = React.useCallback(
+    (e) => {
+      let selected: boolean = e.target.checked;
+      let index: number = indexArray.indexOf(e.target.value);
+      if (selected === true) {
+        setDisabled(false);
+        indexArray.push(e.target.value);
+        console.log(indexArray);
+        handleOnChange(indexArray, index, e);
+      } else {
+        setDisabled(true);
+        indexArray.splice(index, e.target.value);
+        console.log(indexArray);
+        handleOnChange(indexArray, index, e);
+      }
+    },
+    [handleOnChange, indexArray]
+  );
+
+  const handleOnClickCheckAll = React.useCallback((e) => {
+    console.log(handleOnClickPerson(e));
+
+    if (e.target.checked === true) {
+      setCheckAll(true);
+      setDisabled(false);
+      let i: number = -1;
+      for (i = 0; i < list.length; i++) {
+        indexArray.push(list[i].id);
+      }
+      console.log(indexArray);
+    } else {
+      setCheckAll(false);
+      setDisabled(true);
+      let i: number = -1;
+      for (i = 0; i < list.length; i++) {
+        indexArray.splice(list[i].id);
+      }
+      console.log(indexArray);
+    }
+  }, []);
+
+
+  const handleDelete = React.useCallback((array:any[], item:number) => {
+      const newList = [...array];
+      const indexItem = array.findIndex(x => x.id === item);
+      newList.splice(indexItem, 1);
+      return newList;
+  }, []);
 
   return (
     <div>
       <h2>BTTH WEEK 7</h2>
-      <button disabled={disabled} /* onClick={handleDelete} */>DELETE</button>
+      <button disabled={disabled} onClick={() => handleDelete([],1)}>DELETE</button>
       <table>
         <thead>
           <tr>
             <th className="checkBoxAll">
-              <input type="checkbox" checked={checkAll} />
+              <input
+                type="checkbox"
+                checked={checkAll}
+                onClick={handleOnClickCheckAll}
+              />
             </th>
             {columns.map((item) => {
               return <th key={item.id}>{item.culumnName}</th>;
