@@ -54,7 +54,7 @@ const list: Data[] = [
 ];
 
 export default function Sort() {
-  const [data, setData] = React.useState(list);
+  const [data/* , setData */] = React.useState(list);
   const [currentSort, setCurrentSort] = React.useState("default");
 
   const sortTypes: any = {
