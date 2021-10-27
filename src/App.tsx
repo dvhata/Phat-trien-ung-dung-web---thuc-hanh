@@ -1,6 +1,7 @@
 
 import DanhSach from './Week7/DanhSach';
-import './App.css';
+import Sort from './Week8/Sort';
+import './App.scss';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <header className="App-header">
           <h1>Dong Vu Hanh Thao - 19020053</h1>
           <DanhSach/>
+          <Sort />
       </header>
     </div>
   );
